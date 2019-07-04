@@ -1,0 +1,60 @@
+var fs = require('fs');
+
+
+function ranking(list){
+    return list.sort(function (a, b){
+        return a.lap - b.lap
+    })
+}
+
+function mediaSpeed(pilotId, list){
+    let filtered = list.filter(function(a){
+        return a.code === pilotId
+    })
+
+    return (filtered.map(function(el){
+        return el.media
+    }).reduce(function (a, b){
+        return a + b
+    }, 0) / filtered.length)
+}
+
+fs.readFile( __dirname + '/data.txt', function (err, data) {
+  if (err) {
+    throw err; 
+  }
+  
+  //file cleanup
+  csv = data.toString()
+    .trim()
+    .replace(/–/g,'')
+    .replace(/\ +/g,';')
+    .replace(/\t+/g,';')
+
+  var list = []
+  var code = []
+  var result = []
+  csv.split("\n").forEach(function(element, index) {
+    line = element.split(";")
+    list[index] = {
+        'time': line[0],
+        'code': line[1],
+        'pilot': line[2],
+        'lap': line[3],
+        'lap-time': line[4],
+        'media': parseFloat(line[5].replace(/,/g, "."))
+    }
+
+    code.push(line[1].toString())
+
+  });
+
+  code = [...new Set(code)] //unique values
+
+//   console.log(code)
+
+//   console.log(list)
+
+  a = mediaSpeed('023', list)
+  console.log(a)
+});
