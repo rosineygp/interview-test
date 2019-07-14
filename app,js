@@ -1,22 +1,46 @@
 var fs = require('fs');
 
-
-function ranking(list) {
-  return list.sort(function (a, b) {
+function pilotFilter(pilotId, list) {
+  return list.filter(function (a) {
+    return a.code === pilotId
+  }).sort(function (a, b) {
     return a.lap - b.lap
   })
 }
 
-function mediaSpeed(pilotId, list) {
-  let filtered = list.filter(function (a) {
-    return a.code === pilotId
-  })
-
-  return (filtered.map(function (el) {
+function mediaSpeed(pilotRace) {
+  return (pilotRace.map(function (el) {
     return el.media
   }).reduce(function (a, b) {
     return a + b
-  }, 0) / filtered.length)
+  }, 0) / pilotRace.length)
+}
+
+function ranking(list) {
+  return list.sort(function (a, b) {
+    return b.lap - a.lap
+  })
+}
+
+function laps(pilotRace) {
+  return pilotRace.length
+}
+
+function name(pilotRace) {
+  return pilotRace[0].pilot
+}
+
+function totalTime(pilotRace) {
+  let total = pilotRace.map(function (el) {
+    return el.laptime
+  }).reduce(function (a, b) {
+    return (a + b)
+  })
+
+  let td = new Date(total)
+
+  return td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds()
+  
 }
 
 fs.readFile(__dirname + '/data.txt', function (err, data) {
@@ -30,31 +54,54 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
     .replace(/–/g, '')
     .replace(/\ +/g, ';')
     .replace(/\t+/g, ';')
+    .replace(/\;\;/g, ';')
 
   var list = []
   var code = []
   var result = []
   csv.split("\n").forEach(function (element, index) {
+
     line = element.split(";")
+
+    if (line[4].length == 8)
+      line[4] = '0' + line[4];
+    
     list[index] = {
-      'time': line[0],
+      'time': new Date('1970-01-01T' + line[0] + 'Z'),
       'code': line[1],
       'pilot': line[2],
       'lap': line[3],
-      'lap-time': line[4],
+      'laptime': new Date('1970-01-01T00:' + line[4] + 'Z').getTime(),
       'media': parseFloat(line[5].replace(/,/g, "."))
     }
+
+    console.log('1970-01-01T00:' + line[4] + 'Z')
 
     code.push(line[1].toString())
 
   });
 
+  console.log(list)
+
   code = [...new Set(code)] //unique values
 
-  //   console.log(code)
+  code.forEach(function (element, index) {
+    // console.log(element)
+    let pilotRace = pilotFilter(element, list)
+    // console.log(pilotRace)
 
-  //   console.log(list)
+    result[index] = {
+      finished: 1,
+      code: element,
+      name: name(pilotRace),
+      laps: laps(pilotRace),
+      time: totalTime(pilotRace)
+    }
+  })
 
-  a = mediaSpeed('023', list)
-  console.log(a)
+  console.log(result)
+
+  // console.log(ranking(list))
+  // a = mediaSpeed(pilotFilter('023', list))
+  // console.log(a)
 });
