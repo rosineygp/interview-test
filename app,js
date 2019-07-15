@@ -26,6 +26,12 @@ function laps(pilotRace) {
   return pilotRace.length
 }
 
+function bestLap(pilotRace) {
+  return pilotRace.sort(function(a, b){
+    return a.laptime - b.laptime
+  }).shift().laptime
+}
+
 function name(pilotRace) {
   return pilotRace[0].pilot
 }
@@ -84,7 +90,8 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
       code: element,
       name: name(pilotRace),
       laps: laps(pilotRace),
-      time: totalTime(pilotRace)
+      time: totalTime(pilotRace),
+      best: bestLap(pilotRace)
     }
   })
 
@@ -94,19 +101,22 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
     element['position'] = index + 1
   })
 
+  console.log(result)
+
   // printing reseult
 
-  console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \t Tempo Total de Prova")
+  console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \tTempo Total de Prova \tMelhor Volta")
 
   result.forEach(function(element){
-    let td = new Date(element.time)
-    let formatedTime = td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds()
+    let td = new Date(element.time) //total time
+    let bp = new Date(element.best) // melhor volta
     console.log(
       element.position + "\t\t\t" +
       element.code + "\t\t\t" +
       element.name + " \t" +
-      element.laps + "\t\t\t\t " +
-      formatedTime
+      element.laps + "\t\t\t\t" +
+      td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds() + " \t\t" +
+      bp.getMinutes() + ':' + bp.getSeconds() + '.' + bp.getMilliseconds()
     )
   })
 });
