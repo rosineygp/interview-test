@@ -24,6 +24,12 @@ function bestLap(pilotRace) {
   }).shift().laptime
 }
 
+function bestRaceLap(race){
+  return race.sort(function (a, b){
+    return a.best - b.best
+  }).shift()
+}
+
 function raceMediaSpeed(pilotRace) {
   return (pilotRace.map(function (el) {
     return el.media
@@ -103,8 +109,6 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
     element['position'] = index + 1
   })
 
-  console.log(result)
-
   // printing reseult
 
   console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \tTempo Total de Prova \tMelhor Volta \tVelocidade Média")
@@ -122,4 +126,14 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
       element.media.toFixed(3)
     )
   })
+
+  brl = bestRaceLap(result) //best race lap result
+  brlt = new Date(brl.best) //best race lap time
+
+  console.log(
+    "\n" +
+    "Melhor Volta:\n" +
+    "Piloto: " + brl.name + ", " +
+    "Tempo da Volta " +  brlt.getMinutes() + ':' + brlt.getSeconds() + '.' + brlt.getMilliseconds()
+  )
 });
