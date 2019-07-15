@@ -1,0 +1,16 @@
+# Aplicativo feito em nodejs
+
+- O arquivo data.txt foi copiado do markdown sem nenhum alteraçao em sua estrutura
+- Fiz o teste o mais simples o possivel, tentando manter um paradgma funcional
+- Nao separei bem os dominios para ser mais rapido, (nao tenho muito tempo para fazer isso)
+- Poderia ter feito a infraestrutura bem melhor, nao trate este teste como o meu melhor :D
+
+# requerimentos
+
+- node 10 (LTS)
+
+# execuçao
+
+`node app.js`
+
+> no diretorio do projeto
