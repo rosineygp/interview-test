@@ -8,12 +8,6 @@ function pilotFilter(pilotId, list) {
   })
 }
 
-function ranking(list) {
-  return list.sort(function (a, b) {
-    return b.lap - a.lap
-  })
-}
-
 function laps(pilotRace) {
   return pilotRace.length
 }
@@ -74,7 +68,7 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
 
     if (line[4].length == 8)
       line[4] = '0' + line[4];
-    
+
     list[index] = {
       'time': new Date('1970-01-01T' + line[0] + 'Z'),
       'code': line[1],
@@ -113,7 +107,7 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
    element['elapsed_time'] = element.time - result[0].time
  })
 
-  // printing reseult
+  // printing results
 
   console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \tTempo Total de Prova \tMelhor Volta \tVelocidade Média \tTempo de atraso")
 
