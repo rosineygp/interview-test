@@ -8,14 +8,6 @@ function pilotFilter(pilotId, list) {
   })
 }
 
-function mediaSpeed(pilotRace) {
-  return (pilotRace.map(function (el) {
-    return el.media
-  }).reduce(function (a, b) {
-    return a + b
-  }, 0) / pilotRace.length)
-}
-
 function ranking(list) {
   return list.sort(function (a, b) {
     return b.lap - a.lap
@@ -31,6 +23,15 @@ function bestLap(pilotRace) {
     return a.laptime - b.laptime
   }).shift().laptime
 }
+
+function raceMediaSpeed(pilotRace) {
+  return (pilotRace.map(function (el) {
+    return el.media
+  }).reduce(function (a, b) {
+    return a + b
+  }, 0) / pilotRace.length)
+}
+
 
 function name(pilotRace) {
   return pilotRace[0].pilot
@@ -91,7 +92,8 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
       name: name(pilotRace),
       laps: laps(pilotRace),
       time: totalTime(pilotRace),
-      best: bestLap(pilotRace)
+      best: bestLap(pilotRace),
+      media: raceMediaSpeed(pilotRace)
     }
   })
 
@@ -105,7 +107,7 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
 
   // printing reseult
 
-  console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \tTempo Total de Prova \tMelhor Volta")
+  console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \tTempo Total de Prova \tMelhor Volta \tVelocidade Média")
 
   result.forEach(function(element){
     let td = new Date(element.time) //total time
@@ -116,7 +118,8 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
       element.name + " \t" +
       element.laps + "\t\t\t\t" +
       td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds() + " \t\t" +
-      bp.getMinutes() + ':' + bp.getSeconds() + '.' + bp.getMilliseconds()
+      bp.getMinutes() + ':' + bp.getSeconds() + '.' + bp.getMilliseconds() + "\t\t" +
+      element.media.toFixed(3)
     )
   })
 });
