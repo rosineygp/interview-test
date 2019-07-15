@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rosineygp/interview-test.svg?branch=master)](https://travis-ci.org/rosineygp/interview-test)
+
 PROBLEMA
 ========
 Dado o seguinte log de uma corrida de Kart:
