@@ -31,16 +31,12 @@ function name(pilotRace) {
 }
 
 function totalTime(pilotRace) {
-  let total = pilotRace.map(function (el) {
+  return pilotRace.map(function (el) {
     return el.laptime
   }).reduce(function (a, b) {
     return (a + b)
   })
 
-  let td = new Date(total)
-
-  return td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds()
-  
 }
 
 fs.readFile(__dirname + '/data.txt', function (err, data) {
@@ -75,23 +71,16 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
       'media': parseFloat(line[5].replace(/,/g, "."))
     }
 
-    console.log('1970-01-01T00:' + line[4] + 'Z')
-
     code.push(line[1].toString())
 
   });
 
-  console.log(list)
-
   code = [...new Set(code)] //unique values
 
   code.forEach(function (element, index) {
-    // console.log(element)
     let pilotRace = pilotFilter(element, list)
-    // console.log(pilotRace)
 
     result[index] = {
-      finished: 1,
       code: element,
       name: name(pilotRace),
       laps: laps(pilotRace),
@@ -99,9 +88,25 @@ fs.readFile(__dirname + '/data.txt', function (err, data) {
     }
   })
 
-  console.log(result)
+  result.sort(function(a, b){
+    return a.time - b.time
+  }).forEach(function(element, index){
+    element['position'] = index + 1
+  })
 
-  // console.log(ranking(list))
-  // a = mediaSpeed(pilotFilter('023', list))
-  // console.log(a)
+  // printing reseult
+
+  console.log("Posiçao de chegada \tCódigo do Piloto \tNome do Piloto \tQtde Voltas Completadas \t Tempo Total de Prova")
+
+  result.forEach(function(element){
+    let td = new Date(element.time)
+    let formatedTime = td.getMinutes() + ':' + td.getSeconds() + '.' + td.getMilliseconds()
+    console.log(
+      element.position + "\t\t\t" +
+      element.code + "\t\t\t" +
+      element.name + " \t" +
+      element.laps + "\t\t\t\t " +
+      formatedTime
+    )
+  })
 });
